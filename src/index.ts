@@ -4,7 +4,39 @@ import * as ts from 'typescript';
 import * as pascalize from 'pascalize';
 import * as got from 'got';
 
-function createArrayType(k: string, v: Array<any>) {
+export interface Options {
+    // set to true to automatically generate subtypes for non-primitives
+    subtypes: boolean;
+}
+
+interface ArrayOptions {
+    // use a custom type name
+    typeName: string;
+}
+
+function createTypeDeclaration(key: string, values: Array<any>) {
+    // grab all types in array
+    const types = [];
+    values.forEach(val => {
+        if (types.indexOf(typeof val) === -1) {
+            types.push(typeof val);
+        }
+    });
+
+    return ts.createTypeAliasDeclaration(
+        undefined,
+        undefined,
+        pascalize(key),
+        undefined,
+        ts.createUnionTypeNode(
+            types.map(type =>
+                ts.createTypeReferenceNode(ts.createIdentifier(type), undefined)
+            )
+        )
+    );
+}
+
+function createArrayType(k: string, v: Array<any>, options?: ArrayOptions) {
     // grab all types in array
     const types = [];
     v.forEach(val => {
@@ -18,14 +50,21 @@ function createArrayType(k: string, v: Array<any>) {
         k,
         undefined,
         ts.createArrayTypeNode(
-            ts.createUnionTypeNode(
-                types.map(type =>
-                    ts.createTypeReferenceNode(
-                        ts.createIdentifier(type),
-                        undefined
-                    )
-                )
-            )
+            // use the `typeName` if it exists.
+            // otherwise, create a union type of the different types for this key
+            options.typeName
+                ? ts.createTypeReferenceNode(
+                      ts.createIdentifier(pascalize(options.typeName)),
+                      undefined
+                  )
+                : ts.createUnionTypeNode(
+                      types.map(type =>
+                          ts.createTypeReferenceNode(
+                              ts.createIdentifier(type),
+                              undefined
+                          )
+                      )
+                  )
         ),
         undefined
     );
@@ -34,16 +73,29 @@ function createArrayType(k: string, v: Array<any>) {
 /**
  * Generates a TS definition file for the given JSON object
  */
-function createInterfaceFromJson(interfaceName: string, source: string) {
+function createDefinition(
+    interfaceName: string,
+    source: string,
+    options?: Options
+) {
     const o = JSON.parse(source);
     const entries = Object.entries(o);
 
-    // build definitions
+    // build primary interface
     const members = [];
+
+    // build subtypes
+    const subtypes = [];
 
     entries.forEach(([key, value]) => {
         if (Array.isArray(value)) {
-            members.push(createArrayType(key, value));
+            // create and associate a custom type if necessary
+            if (options.subtypes) {
+                subtypes.push(createTypeDeclaration(key, value));
+                members.push(createArrayType(key, value, { typeName: key }));
+            } else {
+                members.push(createArrayType(key, value));
+            }
         } else {
             members.push(
                 ts.createPropertySignature(
@@ -78,7 +130,14 @@ function createInterfaceFromJson(interfaceName: string, source: string) {
     const printer = ts.createPrinter({
         newLine: ts.NewLineKind.LineFeed,
     });
-    return printer.printNode(ts.EmitHint.Unspecified, node, result);
+
+    let main = printer.printNode(ts.EmitHint.Unspecified, node, result);
+    subtypes.forEach(subtype => {
+        main += '\n';
+        main += printer.printNode(ts.EmitHint.Unspecified, subtype, result);
+    });
+
+    return main;
 }
 
 /**
@@ -87,7 +146,7 @@ function createInterfaceFromJson(interfaceName: string, source: string) {
 function createInterfaceFromFile(filename: string) {
     const source = fs.readFileSync(filename, 'utf-8').toString();
     const interfaceName = pascalize(path.parse(filename).name);
-    return createInterfaceFromJson(interfaceName, source);
+    return createDefinition(interfaceName, source);
 }
 
 /**
@@ -99,9 +158,10 @@ function createInterfaceFromFile(filename: string) {
  */
 export default function gents(
     url: string,
-    interfaceName: string
+    interfaceName: string,
+    options?: Options
 ): Promise<string> {
     return got(url).then(response =>
-        createInterfaceFromJson(interfaceName, response.body)
+        createDefinition(interfaceName, response.body, options)
     );
 }

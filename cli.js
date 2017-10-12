@@ -17,6 +17,6 @@ if (!interfaceName) {
     process.exit(9);
 }
 
-gents(url, interfaceName).then(resp => {
+gents(url, interfaceName, { subtypes: true }).then(resp => {
     console.log(resp);
 });
