@@ -95,8 +95,12 @@ function createInterfaceFromFile(filename: string) {
  *
  * @param {string} url - The URL to fetch
  * @param {string} interfaceName - The interface name for this resource
+ * @return {Promise<string>} - A Promise that resolves the transpiled source
  */
-export default function gents(url: string, interfaceName: string) {
+export default function gents(
+    url: string,
+    interfaceName: string
+): Promise<string> {
     return got(url).then(response =>
         createInterfaceFromJson(interfaceName, response.body)
     );
