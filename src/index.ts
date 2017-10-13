@@ -1,7 +1,7 @@
-import path from 'path';
-import fs from 'fs';
-import ts from 'typescript';
-import pascalize from 'pascalize';
+import * as path from 'path';
+import * as fs from 'fs';
+import * as ts from 'typescript';
+import * as pascalize from 'pascalize';
 
 export interface Options {
     // set to true to automatically generate subtypes for non-primitives
