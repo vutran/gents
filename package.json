@@ -10,7 +10,7 @@
         "README.md"
     ],
     "scripts": {
-        "precommit": "npm run build",
+        "prepublish": "npm run build",
         "build": "tsc",
         "test": "jest --verbose --coverage",
         "start": "ts-node src/index.ts"
