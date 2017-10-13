@@ -4,7 +4,13 @@
     "description": "Generate TypeScript definitions from JSON",
     "main": "lib/index.js",
     "typings": "lib/index.d.ts",
+    "files": [
+        "lib",
+        "LICENSE",
+        "README.md"
+    ],
     "scripts": {
+        "precommit": "npm run build",
         "build": "tsc",
         "test": "jest --verbose --coverage",
         "start": "ts-node src/index.ts"
