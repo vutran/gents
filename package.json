@@ -13,6 +13,7 @@
     "author": "Vu Tran <vu@vu-tran.com>",
     "license": "MIT",
     "dependencies": {
+        "pascalize": "^1.0.1",
         "typescript": "^2.2.1"
     },
     "devDependencies": {
@@ -20,7 +21,6 @@
         "@types/node": "^7.0.43",
         "coveralls": "^3.0.0",
         "jest": "^21.2.1",
-        "pascalize": "^1.0.1",
         "ts-jest": "^21.1.2",
         "ts-node": "^3.3.0"
     },
