@@ -1,0 +1,47 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`gents basic types should convert a Array of numbers 1`] = `
+"interface FooGroup {
+    user_ids: (number)[];
+}"
+`;
+
+exports[`gents basic types should convert a Array of strings 1`] = `
+"interface FooGroup {
+    locations: (string)[];
+}"
+`;
+
+exports[`gents basic types should convert a mixed Array of numbers and strings 1`] = `
+"interface MixedGroup {
+    mixed_items: (string | number)[];
+}"
+`;
+
+exports[`gents basic types should convert a number 1`] = `
+"interface User {
+    user_id: number;
+}"
+`;
+
+exports[`gents basic types should convert a string 1`] = `
+"interface User {
+    name: string;
+}"
+`;
+
+exports[`gents subtypes should create multiple subtypes 1`] = `
+"interface FooGroup {
+    locations: Locations[];
+    user_ids: UserIds[];
+}
+type Locations = string;
+type UserIds = number;"
+`;
+
+exports[`gents subtypes should create subtypes for Arrays 1`] = `
+"interface FooGroup {
+    locations: Locations[];
+}
+type Locations = string;"
+`;

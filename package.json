@@ -1,24 +1,39 @@
 {
-  "name": "gents",
-  "version": "0.0.0",
-  "description": "",
-  "main": "index.js",
-  "bin": "./cli.js",
-  "scripts": {
-    "build": "tsc",
-    "start": "ts-node src/index.ts"
-  },
-  "keywords": [],
-  "author": "Vu Tran <vu@vu-tran.com>",
-  "license": "MIT",
-  "dependencies": {
-    "got": "^7.1.0",
-    "pascalize": "^1.0.1",
-    "typescript": "^2.2.1"
-  },
-  "devDependencies": {
-    "@types/node": "^7.0.43",
-    "mri": "^1.1.0",
-    "ts-node": "^3.3.0"
-  }
+    "name": "gents",
+    "version": "0.0.0",
+    "description": "Generate TypeScript definitions from JSON",
+    "main": "index.js",
+    "scripts": {
+        "build": "tsc",
+        "test": "jest --verbose --coverage",
+        "start": "ts-node src/index.ts"
+    },
+    "keywords": [],
+    "author": "Vu Tran <vu@vu-tran.com>",
+    "license": "MIT",
+    "dependencies": {
+        "typescript": "^2.2.1"
+    },
+    "devDependencies": {
+        "@types/jest": "^21.1.2",
+        "@types/node": "^7.0.43",
+        "coveralls": "^3.0.0",
+        "jest": "^21.2.1",
+        "pascalize": "^1.0.1",
+        "ts-jest": "^21.1.2",
+        "ts-node": "^3.3.0"
+    },
+    "jest": {
+        "transform": {
+            "^.+\\.tsx?$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+        },
+        "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+        "moduleFileExtensions": [
+            "ts",
+            "tsx",
+            "js",
+            "jsx",
+            "json"
+        ]
+    }
 }
