@@ -10,7 +10,7 @@ $ npm i -D gents
 
 ## Usage
 
-```
+```typescript
 import gents from 'gents';
 
 const json = `{ "user_id": 1 }`;
